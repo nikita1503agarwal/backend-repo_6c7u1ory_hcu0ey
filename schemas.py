@@ -11,8 +11,8 @@ Model name is converted to lowercase for the collection name:
 - BlogPost -> "blogs" collection
 """
 
-from pydantic import BaseModel, Field
-from typing import Optional
+from pydantic import BaseModel, Field, HttpUrl
+from typing import Optional, List
 
 # Example schemas (replace with your own):
 
@@ -37,6 +37,37 @@ class Product(BaseModel):
     price: float = Field(..., ge=0, description="Price in dollars")
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
+
+# Kazify.ai schemas
+
+class Lesson(BaseModel):
+    title: str
+    summary: Optional[str] = None
+    duration_minutes: Optional[int] = Field(default=None, ge=1)
+
+class Course(BaseModel):
+    """
+    Courses collection schema
+    Collection name: "course"
+    """
+    title: str = Field(..., description="Course title")
+    subtitle: Optional[str] = Field(None, description="Short subtitle")
+    level: str = Field("Beginner", description="Beginner / Intermediate / Advanced")
+    category: str = Field(..., description="e.g., Prompting, Automation, Data, Vision")
+    cover_image: Optional[HttpUrl] = Field(None, description="Cover image URL")
+    description: Optional[str] = None
+    lessons: List[Lesson] = Field(default_factory=list)
+    featured: bool = Field(default=False)
+
+class Lead(BaseModel):
+    """
+    Leads collection schema
+    Collection name: "lead"
+    """
+    name: str = Field(..., description="Full name")
+    email: str = Field(..., description="Email address")
+    interest: Optional[str] = Field(None, description="What they want to learn")
+    source: Optional[str] = Field("website", description="Lead source")
 
 # Add your own schemas here:
 # --------------------------------------------------
